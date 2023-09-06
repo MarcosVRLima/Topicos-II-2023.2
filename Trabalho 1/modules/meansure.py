@@ -4,7 +4,7 @@ import numpy as np
 def meansure(algorithm, x, v, repeat = 1):
     memoryPeaks = []
     timeExecutions = []
-    for _ in range(repeat + 1):
+    for _ in range(repeat):
         tracemalloc.start()
         
         startTime = time.time()
