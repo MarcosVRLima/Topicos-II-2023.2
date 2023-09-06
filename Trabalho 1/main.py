@@ -1,40 +1,14 @@
-import time, os, psutil
-from vetor import vetor
-import numpy as np
+from modules.meansure import meansure
+from modules.generateVector import generateVector
+from algorithms.linearSearchV1 import linearSearchV1
 
-from buscalinearv1 import buscaLinearV1
-
-# Função para obter o uso de memória atual
-def get_memory_usage():
-    pid = os.getpid()
-    process = psutil.Process(pid)
-    memory_info = process.memory_full_info()
-    return memory_info.rss 
-
-def meansure(algoritmo, x, v):
-    while True:
-        initial_memory_usage = get_memory_usage()
-        startTime = time.time()
-        
-        indice = algoritmo(x, v)
-        
-        endTime = time.time()
-        final_memory_usage = get_memory_usage()
-        
-        executionTime = endTime - startTime
-        memoryUsage = final_memory_usage - initial_memory_usage
-        
-        if memoryUsage > 0:
-            return [executionTime, memoryUsage]
-        
 def main():
-    arquivos = [100, 200, 1000, 2000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000]
-    numberSearch = 50000
+    archives = [100, 200, 1000, 2000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 100000000]
     
-    e, m = meansure(buscaLinearV1, numberSearch, vetor(arquivos[9], True))
+    e, m = meansure(linearSearchV1, 50000, generateVector(archives[0], False), 1)
 
-    print(f"Tempo de execução: {e} s")
-    print(f"Memoria utilizada: {m} B\n\n")
+    print(f"Execution time: {e:.10f} seconds")
+    print(f"Used memory: {m} bytes\n\n")
     
 main()
     
