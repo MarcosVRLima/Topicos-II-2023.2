@@ -14,6 +14,7 @@ def quadraticSearch(x, v):
         if count > 0:
             entered = True
     
-    return [position, count]
+    #return [position, count]
+    return count
                 
     

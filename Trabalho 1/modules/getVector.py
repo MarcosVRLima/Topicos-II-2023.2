@@ -1,4 +1,4 @@
-def generateVector(quantity, ordened):
+def getVector(quantity, ordened):
     vector = []
     name = "data/ordened/" if ordened == True else "data/unordened/"
     name = name + str(quantity) + ".txt"

@@ -1,15 +1,45 @@
-import time, tracemalloc
-import numpy as np
+import time, tracemalloc, random
+from numpy import mean
 
-def meansure(algorithm, x, v, repeat = 1):
+from modules.getVector import getVector
+from modules.report import report
+
+def meansure(algorithms, archives, iterations = 1):
+    qtdAlgorithms = len(algorithms)
+    qtdArchives = len(archives) - 1 
+    
+    for i in range(qtdAlgorithms):
+        numberSearched = random.randint(1, archives[qtdArchives])
+        for j in range(qtdArchives):
+            #print((j % (len(archives) - 1)))
+            string = "ordenados"
+            vector = getVector(archives[j], False)
+            if i != 0:
+                executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations, True)
+            else:
+                executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations)
+                
+            data = {
+                "algorithm": algorithms[i].__name__,
+                "quantity": archives[j],
+                "ordened": string,
+                "executionTime": executionTime,
+                "usedMemory": usedMemory
+            }
+            
+            report(data)
+
+def run(algorithm, x, v, repeat = 1, binarySearch = False):            
     memoryPeaks = []
     timeExecutions = []
     for _ in range(repeat):
         tracemalloc.start()
         
         startTime = time.time()
-        
-        algorithm(x, v)
+        if binarySearch:
+            algorithm(x, v, 0, len(v))
+        else:
+            algorithm(x, v)
        
         endTime = time.time()
         
@@ -21,5 +51,5 @@ def meansure(algorithm, x, v, repeat = 1):
         timeExecutions.append(executionTime)
         memoryPeaks.append(peak)
         
-    return [np.mean(timeExecutions), int(np.mean(memoryPeaks))]
+    return [mean(timeExecutions), int(mean(memoryPeaks))]
         
