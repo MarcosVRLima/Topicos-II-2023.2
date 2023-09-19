@@ -9,25 +9,39 @@ def meansure(algorithms, archives, iterations = 1):
     qtdArchives = len(archives) - 1 
     
     for i in range(qtdAlgorithms):
-        numberSearched = random.randint(1, archives[qtdArchives])
-        for j in range(qtdArchives):
-            #print((j % (len(archives) - 1)))
-            string = "ordenados"
-            vector = getVector(archives[j], False)
-            if i != 0:
-                executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations, True)
+        for j in range(qtdArchives * 2):
+            quantity = archives[j % qtdArchives]
+            numberSearched = 5
+            ordened = True if j >= qtdArchives else False
+            vector = getVector(quantity, ordened)
+            acepted = False
+            
+            if i == 0:
+                if ordened == True:
+                    executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations, True)
+                    acepted = True
+            elif i == 1:
+                if ordened == True:
+                    executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations)
+                    acepted = True
             else:
                 executionTime, usedMemory = run(algorithms[i], numberSearched, vector, iterations)
+                acepted = True
                 
-            data = {
-                "algorithm": algorithms[i].__name__,
-                "quantity": archives[j],
-                "ordened": string,
-                "executionTime": executionTime,
-                "usedMemory": usedMemory
-            }
+            del vector
             
-            report(data)
+            if acepted == True:   
+                data = {
+                    "algorithm": algorithms[i].__name__,
+                    "iterations": iterations,
+                    "quantity": quantity,
+                    "ordened": ordened,
+                    "numberSearched": numberSearched,
+                    "executionTime": executionTime,
+                    "usedMemory": usedMemory
+                }
+                
+                report(data)
 
 def run(algorithm, x, v, repeat = 1, binarySearch = False):            
     memoryPeaks = []
@@ -36,7 +50,7 @@ def run(algorithm, x, v, repeat = 1, binarySearch = False):
         tracemalloc.start()
         
         startTime = time.time()
-        if binarySearch:
+        if binarySearch == True:
             algorithm(x, v, 0, len(v))
         else:
             algorithm(x, v)
